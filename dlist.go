@@ -73,9 +73,33 @@ func (d *Deque[T]) PopFront() (T, error) {
 }
 
 func (d *Deque[T]) At(index int) (T, error) {
+	if index < 0 {
+		index = d.size + index
+	}
+	if index < 0 {
+		return T{}, ErrIndexBounds
+	}
+	if index > d.size/2 {
+		return d.getReverse(index)
+	}
+	return d.getForward(index)
+}
+
+func (d *Deque[T]) getForward(idx int) (T, error) {
 	node := d.head
 	for i := 0; i < index && node != nil; i++ {
 		node = node.next
+	}
+	if node == nil {
+		return T{}, ErrIndexBounds
+	}
+	return node.value, nil
+}
+
+func (d *Deque[T]) getReverse(idx int) (T, error) {
+	node := d.tail
+	for i := d.size; i > idx && node != nil; i++ {
+		node = node.prev
 	}
 	if node == nil {
 		return T{}, ErrIndexBounds
