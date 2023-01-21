@@ -72,6 +72,32 @@ func (d *Deque[T]) PopFront() (T, error) {
 	return val, nil
 }
 
+func (d *Deque[T]) PushFront(x T) {
+	node := &listNode{x}
+	node.next = d.head
+	if d.size == 0 {
+		d.tail = node
+	} else {
+		d.head.prev = node
+	}
+	d.head = node
+	d.size++
+	node = nil
+}
+
+func (d *Deque[T]) PushBack(x T) {
+	node := &listNode{x}
+	node.prev = d.tail
+	if d.size == 0 {
+		d.head = node
+	} else {
+		d.tail.next = node
+	}
+	d.tail = node
+	d.size++
+	node = nil
+}
+
 func (d *Deque[T]) At(index int) (T, error) {
 	if index < 0 {
 		index = d.size + index
