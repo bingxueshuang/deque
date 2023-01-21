@@ -12,6 +12,10 @@ type Deque[T any] struct {
 	size int
 }
 
+func New[T any]() *Deque[T] {
+	return &Deque{}
+}
+
 func (d *Deque[T]) Back() (T, error) {
 	if d.size == 0 {
 		return T{}, ErrUnderflow
