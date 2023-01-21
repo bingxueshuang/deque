@@ -71,3 +71,14 @@ func (d *Deque[T]) PopFront() (T, error) {
 	node = nil
 	return val, nil
 }
+
+func (d *Deque[T]) At(index int) (T, error) {
+	node := d.head
+	for i := 0; i < index && node != nil; i++ {
+		node = node.next
+	}
+	if node == nil {
+		return T{}, ErrIndexBounds
+	}
+	return node.value, nil
+}

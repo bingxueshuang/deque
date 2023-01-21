@@ -16,4 +16,5 @@ type Interface[T any] interface {
 	func PopFront() (T, error)
 	func PushBack(x T)
 	func PushFront(x T)
+	func At(index int) (T, error)
 }
