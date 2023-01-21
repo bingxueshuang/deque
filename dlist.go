@@ -4,28 +4,29 @@ import "sync"
 
 type listNode[T any] struct {
 	value T
-	prev *listNode
-	next *listNode
+	prev  *listNode[T]
+	next  *listNode[T]
 }
 
 type Deque[T any] struct {
-	mu sync.Mutex
+	mu   sync.Mutex
 	head *listNode[T]
 	tail *listNode[T]
 	size int
 }
 
 func New[T any]() *Deque[T] {
-	return &Deque{}
+	return &Deque[T]{}
 }
 
 func (d *Deque[T]) Back() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+	var zero T
 	if d.size == 0 {
-		return T{}, ErrUnderflow
+		return zero, ErrUnderflow
 	}
-	return d.tail.value
+	return d.tail.value, nil
 }
 
 func (d *Deque[T]) Clear() {
@@ -39,10 +40,11 @@ func (d *Deque[T]) Clear() {
 func (d *Deque[T]) Front() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+	var zero T
 	if d.size == 0 {
-		return T{}, ErrUnderflow
+		return zero, ErrUnderflow
 	}
-	return d.head.value
+	return d.head.value, nil
 }
 
 func (d *Deque[T]) Len() int {
@@ -54,8 +56,9 @@ func (d *Deque[T]) Len() int {
 func (d *Deque[T]) PopBack() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+	var zero T
 	if d.size == 0 {
-		return T{}, ErrUnderflow
+		return zero, ErrUnderflow
 	}
 	node := d.tail
 	val := node.value
@@ -74,8 +77,9 @@ func (d *Deque[T]) PopBack() (T, error) {
 func (d *Deque[T]) PopFront() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+	var zero T
 	if d.size == 0 {
-		return T{}, ErrUnderflow
+		return zero, ErrUnderflow
 	}
 	node := d.head
 	val := node.value
@@ -94,7 +98,7 @@ func (d *Deque[T]) PopFront() (T, error) {
 func (d *Deque[T]) PushFront(x T) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	node := &listNode{x}
+	node := &listNode[T]{value: x}
 	node.next = d.head
 	if d.size == 0 {
 		d.tail = node
@@ -109,7 +113,7 @@ func (d *Deque[T]) PushFront(x T) {
 func (d *Deque[T]) PushBack(x T) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	node := &listNode{x}
+	node := &listNode[T]{value: x}
 	node.prev = d.tail
 	if d.size == 0 {
 		d.head = node
@@ -124,11 +128,12 @@ func (d *Deque[T]) PushBack(x T) {
 func (d *Deque[T]) At(index int) (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
+	var zero T
 	if index < 0 {
 		index = d.size + index
 	}
 	if index < 0 {
-		return T{}, ErrIndexBounds
+		return zero, ErrIndexBounds
 	}
 	if index > d.size/2 {
 		return d.getReverse(index)
@@ -137,23 +142,27 @@ func (d *Deque[T]) At(index int) (T, error) {
 }
 
 func (d *Deque[T]) getForward(idx int) (T, error) {
+	var zero T
 	node := d.head
-	for i := 0; i < index && node != nil; i++ {
+	for i := 0; i < idx && node != nil; i++ {
 		node = node.next
 	}
 	if node == nil {
-		return T{}, ErrIndexBounds
+		return zero, ErrIndexBounds
 	}
 	return node.value, nil
 }
 
 func (d *Deque[T]) getReverse(idx int) (T, error) {
+	var zero T
 	node := d.tail
 	for i := d.size; i > idx && node != nil; i++ {
 		node = node.prev
 	}
 	if node == nil {
-		return T{}, ErrIndexBounds
+		return zero, ErrIndexBounds
 	}
 	return node.value, nil
 }
+
+var _ Interface[int] = &Deque[int]{}
