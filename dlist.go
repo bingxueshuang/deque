@@ -1,5 +1,7 @@
 package deque
 
+import "sync"
+
 type listNode[T any] struct {
 	value T
 	prev *listNode
@@ -7,6 +9,7 @@ type listNode[T any] struct {
 }
 
 type Deque[T any] struct {
+	mu sync.Mutex
 	head *listNode[T]
 	tail *listNode[T]
 	size int
@@ -17,6 +20,8 @@ func New[T any]() *Deque[T] {
 }
 
 func (d *Deque[T]) Back() (T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	if d.size == 0 {
 		return T{}, ErrUnderflow
 	}
@@ -24,12 +29,16 @@ func (d *Deque[T]) Back() (T, error) {
 }
 
 func (d *Deque[T]) Clear() {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	d.head = nil
 	d.tail = nil
 	d.size = 0
 }
 
 func (d *Deque[T]) Front() (T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	if d.size == 0 {
 		return T{}, ErrUnderflow
 	}
@@ -37,10 +46,14 @@ func (d *Deque[T]) Front() (T, error) {
 }
 
 func (d *Deque[T]) Len() int {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	return d.size
 }
 
 func (d *Deque[T]) PopBack() (T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	if d.size == 0 {
 		return T{}, ErrUnderflow
 	}
@@ -59,6 +72,8 @@ func (d *Deque[T]) PopBack() (T, error) {
 }
 
 func (d *Deque[T]) PopFront() (T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	if d.size == 0 {
 		return T{}, ErrUnderflow
 	}
@@ -77,6 +92,8 @@ func (d *Deque[T]) PopFront() (T, error) {
 }
 
 func (d *Deque[T]) PushFront(x T) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	node := &listNode{x}
 	node.next = d.head
 	if d.size == 0 {
@@ -90,6 +107,8 @@ func (d *Deque[T]) PushFront(x T) {
 }
 
 func (d *Deque[T]) PushBack(x T) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	node := &listNode{x}
 	node.prev = d.tail
 	if d.size == 0 {
@@ -103,6 +122,8 @@ func (d *Deque[T]) PushBack(x T) {
 }
 
 func (d *Deque[T]) At(index int) (T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
 	if index < 0 {
 		index = d.size + index
 	}
