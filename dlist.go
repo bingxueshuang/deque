@@ -2,12 +2,17 @@ package deque
 
 import "sync"
 
+// listNode is node of doubly linked list.
 type listNode[T any] struct {
 	value T
 	prev  *listNode[T]
 	next  *listNode[T]
 }
 
+// Deque is double ended queue implemented as a doubly linked list.
+// Deque satisfies Interface. A Deque instance represents deque data
+// structure that contains items of type specified by the type argument.
+// The zero value of a Deque is ready to use empty deque.
 type Deque[T any] struct {
 	mu   sync.Mutex
 	head *listNode[T]
@@ -15,10 +20,15 @@ type Deque[T any] struct {
 	size int
 }
 
+var _ Interface[int] = &Deque[int]{}
+
+// New creates new empty Deque.
 func New[T any]() *Deque[T] {
 	return &Deque[T]{}
 }
 
+// Back returns the item at the back of the deque.
+// If it is called on an empty deque, it returns ErrUnderflow.
 func (d *Deque[T]) Back() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -29,6 +39,7 @@ func (d *Deque[T]) Back() (T, error) {
 	return d.tail.value, nil
 }
 
+// Clear resets the deque into an empty list.
 func (d *Deque[T]) Clear() {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -37,6 +48,8 @@ func (d *Deque[T]) Clear() {
 	d.size = 0
 }
 
+// Front returns the item at the front of the deque.
+// It returns ErrUnderflow if called on an empty deque.
 func (d *Deque[T]) Front() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -47,12 +60,15 @@ func (d *Deque[T]) Front() (T, error) {
 	return d.head.value, nil
 }
 
+// Len returns the number of items currently stored in deque.
 func (d *Deque[T]) Len() int {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 	return d.size
 }
 
+// PopBack removes and returns the item at the back of the deque.
+// It returns ErrUnderflow if called on an empty deque.
 func (d *Deque[T]) PopBack() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -74,6 +90,8 @@ func (d *Deque[T]) PopBack() (T, error) {
 	return val, nil
 }
 
+// PopFront removes and returns the item at the front of the deque.
+// It returns ErrUnderflow if called on an empty deque.
 func (d *Deque[T]) PopFront() (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -95,10 +113,11 @@ func (d *Deque[T]) PopFront() (T, error) {
 	return val, nil
 }
 
-func (d *Deque[T]) PushFront(x T) {
+// PushFront inserts item at the front of the deque.
+func (d *Deque[T]) PushFront(item T) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	node := &listNode[T]{value: x}
+	node := &listNode[T]{value: item}
 	node.next = d.head
 	if d.size == 0 {
 		d.tail = node
@@ -110,10 +129,11 @@ func (d *Deque[T]) PushFront(x T) {
 	node = nil
 }
 
-func (d *Deque[T]) PushBack(x T) {
+// PushBack inserts item at the back of the deque.
+func (d *Deque[T]) PushBack(item T) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
-	node := &listNode[T]{value: x}
+	node := &listNode[T]{value: item}
 	node.prev = d.tail
 	if d.size == 0 {
 		d.head = node
@@ -125,6 +145,10 @@ func (d *Deque[T]) PushBack(x T) {
 	node = nil
 }
 
+// At returns the element at the specified index.
+// If the index is negative, it refers to ith element
+// from the back of the deque. If index exceeds the length
+// of the deque, returns ErrIndexBounds.
 func (d *Deque[T]) At(index int) (T, error) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
@@ -164,5 +188,3 @@ func (d *Deque[T]) getReverse(idx int) (T, error) {
 	}
 	return node.value, nil
 }
-
-var _ Interface[int] = &Deque[int]{}
