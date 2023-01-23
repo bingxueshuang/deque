@@ -33,3 +33,11 @@ type Interface[T any] interface {
 	PushFront(x T) // insert at the front of the deque
 	At(index int) (T, error) // access i-th element
 }
+
+// Must is a helper (wrapper) to cause panic in case of any error.
+func Must[T any](value T, e error) T {
+	if err != nil {
+		panic(err)
+	}
+	return value
+}

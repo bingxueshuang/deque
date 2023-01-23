@@ -29,26 +29,18 @@ import (
 	"github.com/bingxueshuang/deque"
 )
 
-func Must(s string, e error) string {
-	if e != nil {
-		log.Fatal(e)
-		return ""
-	}
-	return s
-}
-
 func main() {
 	q := deque.New[string]()
-	q.PushBack("foo")
-	q.PushBack("bar")
-	q.PushFront("baz")
+	q.PushBack("foo")  // { "foo" }
+	q.PushBack("bar")  // { "foo", "bar" }
+	q.PushFront("baz") // { "baz", "foo", "bar" }
 	
-	fmt.Println("Length:", q.Len())
-	fmt.Println("Front:", Must(q.Front()))
-	fmt.Println("Back:", Must(q.Back()))
+	fmt.Println("Length:", q.Len()) // 3
+	fmt.Println("Front:", deque.Must(q.Front())) // baz
+	fmt.Println("Back:", deque.Must(q.Back()))   // bar
 	
-	fmt.Println("Pop:", Must(q.PopBack()))
-	fmt.Println("Pop:", Must(q.PopBack()))
-	fmt.Println("Pop:", Must(q.PopBack()))
+	fmt.Println("Pop:", deque.Must(q.PopBack())) // bar
+	fmt.Println("Pop:", deque.Must(q.PopBack())) // foo
+	fmt.Println("Pop:", deque.Must(q.PopBack())) // baz
 }
 ```
