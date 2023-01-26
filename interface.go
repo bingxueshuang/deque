@@ -2,7 +2,9 @@
 // at both ends of the queue.
 //
 // Methods on type Deque are of the form:
-//    d.{op}{loc}
+//
+//	d.{op}{loc}
+//
 // where `op` is 'Push', 'Pop' or empty;
 // and `loc` is 'Front' or 'Back'
 //
@@ -15,7 +17,7 @@ import "errors"
 var (
 	// ErrUnderflow is returned when an empty deque is queried for
 	// an item.
-	ErrUnderflow   = errors.New("deque underflow")
+	ErrUnderflow = errors.New("deque underflow")
 
 	// ErrIndexBounds is returned when requested index exceeds
 	// the length of the deque.
@@ -27,14 +29,14 @@ var (
 // and access elements from the deque. The type Deque implements
 // Interface.
 type Interface[T any] interface {
-	Back() (T, error) // item at the back of the deque
-	Clear() // reset the deque
-	Front() (T, error) // item at the front of the deque
-	Len() int // length of the deque
-	PopBack() (T, error) // remove and return last item
-	PopFront() (T, error) // remove and return first item
-	PushBack(x T) // insert at the back of the deque
-	PushFront(x T) // insert at the front of the deque
+	Back() (T, error)        // item at the back of the deque
+	Clear()                  // reset the deque
+	Front() (T, error)       // item at the front of the deque
+	Len() int                // length of the deque
+	PopBack() (T, error)     // remove and return last item
+	PopFront() (T, error)    // remove and return first item
+	PushBack(x T)            // insert at the back of the deque
+	PushFront(x T)           // insert at the front of the deque
 	At(index int) (T, error) // access i-th element
 }
 
