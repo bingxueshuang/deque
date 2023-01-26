@@ -22,6 +22,10 @@ var (
 	ErrIndexBounds = errors.New("deque index out of bounds")
 )
 
+// Interface represents abstract data type (ADT) for deque
+// data structure. It provides basic methods insert, delete
+// and access elements from the deque. The type Deque implements
+// Interface.
 type Interface[T any] interface {
 	Back() (T, error) // item at the back of the deque
 	Clear() // reset the deque
