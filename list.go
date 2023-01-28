@@ -3,14 +3,14 @@ package deque
 // listNode is node of circular doubly linked list
 type listNode[T any] struct {
 	value T
-	prev *listNode
-	next *listNode
+	prev  *listNode[T]
+	next  *listNode[T]
 }
 
 // Deque is double ended queue data structure implemented
 // using circular doubly linked list. Deque satisfies Interface.
 type Deque[T any] struct {
-	nil *listNode
+	nil  *listNode[T]
 	size int
 }
 
@@ -18,7 +18,7 @@ type Deque[T any] struct {
 // with proper list node. This should be called when sentinel
 // is nil.
 func (d *Deque[T]) init() {
-	node = &listNode[T]{}
+	node := &listNode[T]{}
 	node.prev = node
 	node.next = node
 	d.nil = node
@@ -34,11 +34,12 @@ func New[T any]() *Deque[T] {
 // Back returns the item at the back of the deque.
 // If it is called on an empty deque, it returns ErrUnderflow.
 func (d *Deque[T]) Back() (item T, err error) {
-	if d == nil || d.nil == nil || d.size == 0 {
+	if d == nil || d.size == 0 {
 		err = ErrUnderflow
 		return
 	}
-	return d.nil.prev, nil
+	node := d.nil.prev
+	return node.value, nil
 }
 
 // Clear resets the deque into an empty list.
@@ -48,12 +49,13 @@ func (d *Deque[T]) Clear() {
 
 // Front returns the item at the front of the deque.
 // It returns ErrUnderflow if called on an empty deque.
-func (d *Deque[T]) Front() (T, error) {
-	if d == nil || d.nil == nil || d.size == 0 {
+func (d *Deque[T]) Front() (item T, err error) {
+	if d == nil || d.size == 0 {
 		err = ErrUnderflow
 		return
 	}
-	return d.nil.next, nil
+	node := d.nil.next
+	return node.value, nil
 }
 
 // Len returns the number of items currently stored in deque.
@@ -87,8 +89,8 @@ func (d *Deque[T]) PushBack(item T) error {
 func (d *Deque[T]) insert(item T, prev, next *listNode[T]) {
 	node := &listNode[T]{
 		value: item,
-		prev: prev,
-		next: next,
+		prev:  prev,
+		next:  next,
 	}
 	prev.next = node
 	next.prev = node
@@ -98,24 +100,25 @@ func (d *Deque[T]) insert(item T, prev, next *listNode[T]) {
 // PopFront removes and returns the item at the front of the deque.
 // It returns ErrUnderflow if called on an empty deque.
 func (d *Deque[T]) PopFront() (item T, err error) {
-	if d == nil || d.nil == nil || d.size == 0 {
+	if d == nil || d.size == 0 {
 		err = ErrUnderflow
 		return
 	}
-	d.remove(d.nil.next)
+	return d.remove(d.nil.next), nil
 }
 
 // PopBack removes and returns the item at the back of the deque.
 // It returns ErrUnderflow if called on an empty deque.
 func (d *Deque[T]) PopBack() (item T, err error) {
-	if d == nil || d.nil == nil || d.size == 0 {
+	if d == nil || d.size == 0 {
 		err = ErrUnderflow
 		return
 	}
-	d.remove(d.nil.prev)
+	return d.remove(d.nil.prev), nil
 }
 
-func (d *Deque[T]) remove(node *listNode[T]) {
+func (d *Deque[T]) remove(node *listNode[T]) T {
+	item := node.value
 	prev := node.prev
 	next := node.next
 	prev.next = next
@@ -124,15 +127,16 @@ func (d *Deque[T]) remove(node *listNode[T]) {
 	node.prev = nil
 	node.next = nil
 	node = nil
+	return item
 }
 
 // At returns the element at the specified index.
 // If the index is negative, it refers to ith element from the
 // back of the deque. If index exceeds the length of the deque,
 // returns ErrIndexBounds.
-func (d* Deque[T]) At(index int) (item T, err error) {
+func (d *Deque[T]) At(index int) (item T, err error) {
 	err = ErrIndexBounds
-	if d == nil || d.nil == nil {
+	if d == nil {
 		return
 	}
 	if index < 0 {
@@ -147,7 +151,6 @@ func (d* Deque[T]) At(index int) (item T, err error) {
 	return d.getForward(index)
 }
 
-
 func (d *Deque[T]) getForward(idx int) (item T, err error) {
 	node := d.nil.next
 	for i := 0; node != nil && i < idx && node != d.nil; i++ {
@@ -161,7 +164,7 @@ func (d *Deque[T]) getForward(idx int) (item T, err error) {
 		err = ErrIndexBounds
 		return
 	}
-	return node, nil
+	return node.value, nil
 }
 
 func (d *Deque[T]) getReverse(idx int) (item T, err error) {
@@ -177,5 +180,7 @@ func (d *Deque[T]) getReverse(idx int) (item T, err error) {
 		err = ErrIndexBounds
 		return
 	}
-	return node, nil
+	return node.value, nil
 }
+
+var _ Interface[int] = New[int]()
