@@ -40,8 +40,8 @@ type Interface[T any] interface {
 	Len() int                // length of the deque
 	PopBack() (T, error)     // remove and return last item
 	PopFront() (T, error)    // remove and return first item
-	PushBack(x T)            // insert at the back of the deque
-	PushFront(x T)           // insert at the front of the deque
+	PushBack(x T) error      // insert at the back of the deque
+	PushFront(x T) error     // insert at the front of the deque
 	At(index int) (T, error) // access i-th element
 }
 
