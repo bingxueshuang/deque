@@ -22,6 +22,11 @@ var (
 	// ErrIndexBounds is returned when requested index exceeds
 	// the length of the deque.
 	ErrIndexBounds = errors.New("deque index out of bounds")
+
+	// ErrInit is returned when the deque is either nil or
+	// in an invalid state. This would not be needed if the
+	// deque is always properly initialised.
+	ErrInit = errors.New("deque is not properly initialised")
 )
 
 // Interface represents abstract data type (ADT) for deque

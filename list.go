@@ -46,12 +46,40 @@ func (d* Deque[T]) At(index int) (item T, err error) {
 	if index < 0 || index >= d.size {
 		return
 	}
+	if index > d.size/2 {
+		return d.getReverse(index)
+	}
+	return d.getForward(index)
+}
+
+
+func (d *Deque[T]) getForward(idx int) (item T, err error) {
 	node := d.nil.next
-	for i := 0; i < index && node != d.nil; i++ {
+	for i := 0; node != nil && i < idx && node != d.nil; i++ {
 		node = node.next
 	}
+	if node == nil {
+		err = ErrInit
+		return
+	}
 	if node == d.nil {
-		// this branch shall never execute
+		err = ErrIndexBounds
+		return
+	}
+	return node, nil
+}
+
+func (d *Deque[T]) getReverse(idx int) (item T, err error) {
+	node := d.nil.prev
+	for i := 0; node != nil && i < idx && node != d.nil; i++ {
+		node = node.prev
+	}
+	if node == nil {
+		err = ErrInit
+		return
+	}
+	if node == d.nil {
+		err = ErrIndexBounds
 		return
 	}
 	return node, nil
