@@ -30,3 +30,29 @@ func New[T any]() *Deque[T] {
 	deque.init()
 	return deque
 }
+
+// At returns the element at the specified index.
+// If the index is negative, it refers to ith element from the
+// back of the deque. If index exceeds the length of the deque,
+// returns ErrIndexBounds.
+func (d* Deque[T]) At(index int) (item T, err error) {
+	err = ErrIndexBounds
+	if d == nil || d.nil == nil {
+		return
+	}
+	if index < 0 {
+		index = d.size - index
+	}
+	if index < 0 || index >= d.size {
+		return
+	}
+	node := d.nil.next
+	for i := 0; i < index && node != d.nil; i++ {
+		node = node.next
+	}
+	if node == d.nil {
+		// this branch shall never execute
+		return
+	}
+	return node, nil
+}
