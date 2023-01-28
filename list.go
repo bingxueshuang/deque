@@ -31,6 +31,39 @@ func New[T any]() *Deque[T] {
 	return deque
 }
 
+// Back returns the item at the back of the deque.
+// If it is called on an empty deque, it returns ErrUnderflow.
+func (d *Deque[T]) Back() (item T, err error) {
+	if d == nil || d.nil == nil || d.size == 0 {
+		err = ErrUnderflow
+		return
+	}
+	return d.nil.prev, nil
+}
+
+// Clear resets the deque into an empty list.
+func (d *Deque[T]) Clear() {
+	d.init()
+}
+
+// Front returns the item at the front of the deque.
+// It returns ErrUnderflow if called on an empty deque.
+func (d *Deque[T]) Front() (T, error) {
+	if d == nil || d.nil == nil || d.size == 0 {
+		err = ErrUnderflow
+		return
+	}
+	return d.nil.next, nil
+}
+
+// Len returns the number of items currently stored in deque.
+func (d *Deque[T]) Len() int {
+	if d == nil {
+		return 0
+	}
+	return d.size
+}
+
 // At returns the element at the specified index.
 // If the index is negative, it refers to ith element from the
 // back of the deque. If index exceeds the length of the deque,
