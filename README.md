@@ -33,16 +33,16 @@ import (
 
 func main() {
 	q := deque.New[string]()
-	q.PushBack("foo")  // { "foo" }
-	q.PushBack("bar")  // { "foo", "bar" }
-	q.PushFront("baz") // { "baz", "foo", "bar" }
-	
+	deque.Must(q.PushBack("foo"))  // { "foo" }
+	deque.Must(q.PushBack("bar"))  // { "foo", "bar" }
+	deque.Must(q.PushFront("baz")) // { "baz", "foo", "bar" }
+
 	fmt.Println("Length:", q.Len()) // 3
-	fmt.Println("Front:", deque.Must(q.Front())) // baz
-	fmt.Println("Back:", deque.Must(q.Back()))   // bar
-	
-	fmt.Println("Pop:", deque.Must(q.PopBack())) // bar
-	fmt.Println("Pop:", deque.Must(q.PopBack())) // foo
-	fmt.Println("Pop:", deque.Must(q.PopBack())) // baz
+	fmt.Println("Front:", deque.Must1(q.Front())) // baz
+	fmt.Println("Back:", deque.Must1(q.Back()))   // bar
+
+	fmt.Println("Pop:", deque.Must1(q.PopBack())) // bar
+	fmt.Println("Pop:", deque.Must1(q.PopBack())) // foo
+	fmt.Println("Pop:", deque.Must1(q.PopBack())) // baz
 }
 ```

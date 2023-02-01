@@ -46,7 +46,16 @@ type Interface[T any] interface {
 }
 
 // Must is a helper (wrapper) to cause panic in case of any error.
-func Must[T any](value T, err error) T {
+func Must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+// Must1 is a helper (wrapper) to cause panic in case of any error.
+// Returns the value expected to be returned from the arguments in
+// case of no error.
+func Must1[T any](value T, err error) T {
 	if err != nil {
 		panic(err)
 	}
