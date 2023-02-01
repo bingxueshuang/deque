@@ -28,7 +28,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"github.com/bingxueshuang/deque"
+	"github.com/bingxueshuang/deque/v2"
 )
 
 func main() {
