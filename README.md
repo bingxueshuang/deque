@@ -1,6 +1,6 @@
 # Deque
 
-This package implements a double ended queue using doubly linked list.
+This package implements a double ended queue using circular doubly linked list.
 It provides means for efficient insertion and retrieval at both the ends. It
 can be used as a stack as well as a queue.
 
@@ -16,7 +16,9 @@ takes time linear the number of items in the deque.
 
 Doubly linked list allows items to be appended dynamically (unlike array or
 ring buffer implementation). Since it is coded in go, all operations are
-memory safe. Methods are not supported on a `nil` deque.
+memory safe. `nil` deque is readonly. It means that methods like `Len`, `Clear`,
+`Front`, `Back`, `PopFront` and `PopBack` handle `nil` deques the same as empty
+deque. But write or modify operations return `ErrInit`.
 
 ## Examples
 

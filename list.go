@@ -8,7 +8,7 @@ type listNode[T any] struct {
 }
 
 // Deque is double ended queue data structure implemented
-// using circular doubly linked list. Deque satisfies Interface.
+// using circular doubly linked list. *Deque satisfies Interface.
 type Deque[T any] struct {
 	nil  *listNode[T]
 	size int
@@ -44,6 +44,9 @@ func (d *Deque[T]) Back() (item T, err error) {
 
 // Clear resets the deque into an empty list.
 func (d *Deque[T]) Clear() {
+	if d == nil {
+		return
+	}
 	d.init()
 }
 
@@ -86,6 +89,7 @@ func (d *Deque[T]) PushBack(item T) error {
 	return nil
 }
 
+// insert inserts item between prev and next
 func (d *Deque[T]) insert(item T, prev, next *listNode[T]) {
 	node := &listNode[T]{
 		value: item,
@@ -117,6 +121,7 @@ func (d *Deque[T]) PopBack() (item T, err error) {
 	return d.remove(d.nil.prev), nil
 }
 
+// remove removes the given node
 func (d *Deque[T]) remove(node *listNode[T]) T {
 	item := node.value
 	prev := node.prev

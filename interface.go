@@ -8,8 +8,8 @@
 // where `op` is 'Push', 'Pop' or empty;
 // and `loc` is 'Front' or 'Back'
 //
-// The type *Deque implements Interface and internally uses a doubly linked
-// list for storing items.
+// The type *Deque implements Interface and internally uses a circular
+// doubly linked list for storing items.
 package deque
 
 import "errors"
